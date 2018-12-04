@@ -41,6 +41,9 @@ def save_page(title, content):
 def get_news(url):
     page = get_page(url)
     data = parse_page(page)
+    # print('content', data['content'])
+    if data['content'] is None:
+        return False
     path = save_page(data['title'], data['content'])
     down_imgs(data['imgs'])
     return path, data['title']
@@ -98,21 +101,33 @@ def save_pdf(path, title):
     pdfkit.from_file(path, out_path, configuration=configuration, options=options)
 
 def single_page(url): 
+    print('getting url ...', url)
     get_news_data = get_news(url)
+    if get_news_data is False:
+        return False
     path = get_news_data[0]
     title = get_news_data[1]
     html_deal(path)
     save_pdf(path, title)
 
-def main():
-    # main_url = 'https://cn.nytimes.com/async/mostviewed/all/?lang=zh-hans'
-    # page = get_page(main_url)
-    # news_list = json.loads(page)
-    # daily = news_list['list']['daily']
-    # print(daily)
-    single_page('https://cn.nytimes.com/world/20181203/trump-xi-g20-merkel/')
 
+def get_cn_daily_news(url):
+    page = get_page(url)
+    news_list = json.loads(page)
+    daily = news_list['list']['daily']
+    return daily
+
+def cn_nytimes():
+    cn_main_url = config.cn_main_url
+    daily = get_cn_daily_news(cn_main_url)
+    for item in daily:
+        # print('item', item)
+        single_page(item['url'])
+
+def main():
+    cn_nytimes()
     
 
+    
 if __name__ == '__main__':
     main()
