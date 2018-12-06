@@ -124,10 +124,9 @@ def cn_nytimes():
         # print('item', item)
         single_page(item['url'])
 
+
 def main():
     cn_nytimes()
-    
-
     
 if __name__ == '__main__':
     main()
