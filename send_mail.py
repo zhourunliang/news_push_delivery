@@ -6,12 +6,16 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.application import MIMEApplication
 import smtplib
+import os
 
+from utils import get_all_file
+import config
 import mail_config
 
 def _format_addr(s):
     name, addr = parseaddr(s)
     return formataddr((Header(name, 'utf-8').encode(), addr))
+
 
 def send_kindle(file_path, file_name):
     from_addr = mail_config.from_addr
@@ -40,8 +44,10 @@ def send_kindle(file_path, file_name):
     server.sendmail(from_addr, [to_addr], msg.as_string())
     server.quit()
 
-def main():
-    send_kindle('./pdf_out/test.pdf', 'test.pdf')
 
-if __name__ == '__main__':
-    main()
+def send_news_emil():
+    file_list = get_all_file(config.pdf_merger)
+    # print(file_list)
+    for file in file_list:
+        file_name = os.path.basename(file)
+        send_kindle(file, file_name)

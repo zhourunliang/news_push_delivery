@@ -1,4 +1,6 @@
 __pycache__/
+*.py[cod]
 download/
 pdf_out/
+pdf_merger/
 mail_config.py
