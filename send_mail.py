@@ -9,6 +9,9 @@ import smtplib
 
 import mail_config
 
+def _format_addr(s):
+    name, addr = parseaddr(s)
+    return formataddr((Header(name, 'utf-8').encode(), addr))
 
 def send_kindle(file_path, file_name):
     from_addr = mail_config.from_addr
@@ -18,8 +21,9 @@ def send_kindle(file_path, file_name):
 
     # 邮件对象:
     msg = MIMEMultipart()
-    msg['From'] = Header('新闻推送', 'utf-8').encode()
-    msg['To'] = Header('kindle', 'utf-8').encode()
+
+    msg['From'] = _format_addr('新闻推送 <%s>' % from_addr)
+    msg['To'] = _format_addr('kindle <%s>' % to_addr)
     msg['Subject'] = Header('convert', 'utf-8').encode()
 
     # 邮件正文是MIMEText:
