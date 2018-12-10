@@ -28,7 +28,7 @@ def send_kindle(file_path, file_name):
 
     msg['From'] = _format_addr('新闻推送 <%s>' % from_addr)
     msg['To'] = _format_addr('kindle <%s>' % to_addr)
-    msg['Subject'] = Header('convert', 'utf-8').encode()
+    msg['Subject'] = Header('kindle', 'utf-8').encode()
 
     # 邮件正文是MIMEText:
     msg.attach(MIMEText('convert', 'plain', 'utf-8'))
@@ -51,3 +51,5 @@ def send_news_emil():
     for file in file_list:
         file_name = os.path.basename(file)
         send_kindle(file, file_name)
+
+

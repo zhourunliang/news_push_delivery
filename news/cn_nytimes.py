@@ -50,8 +50,8 @@ class CnNytimes(News):
 
     @classmethod
     def main(cls):
-        cn_main_url = config.cn_main_url
-        daily = cls._get_daily_news(cn_main_url)
+        main_url = config.cn_nytimes_main_url
+        daily = cls._get_daily_news(main_url)
         for item in daily:
             # print('item', item)
             cls._single_page(item['url'])
