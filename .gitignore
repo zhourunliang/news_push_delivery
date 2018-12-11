@@ -4,3 +4,4 @@ download/
 pdf_out/
 pdf_merger/
 mail_config.py
+*.log

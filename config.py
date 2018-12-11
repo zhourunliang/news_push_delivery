@@ -10,3 +10,5 @@ pdf_out_folder = './pdf_out'
 pdf_merger = './pdf_merger'
 
 cn_nytimes_main_url = 'https://cn.nytimes.com/async/mostviewed/all/?lang=zh-hans'
+cn_bbc_head_url = 'https://www.bbc.com/zhongwen/simp'
+cn_bbc_main_url = 'https://www.bbc.com'
