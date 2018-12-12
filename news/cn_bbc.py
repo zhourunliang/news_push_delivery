@@ -7,8 +7,9 @@ import pdfkit
 from PyPDF2 import PdfFileMerger
 import time
 
-from selenium.webdriver import Firefox
+from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 import config
 from news import News
@@ -17,7 +18,24 @@ from utils import *
 
 options = Options()
 options.add_argument('-headless')
-driver = Firefox(executable_path='C:\\tools\\geckodriver\\mozilla\\geckodriver', firefox_options=options)
+
+profile = FirefoxProfile()
+# 激活手动代理配置（对应着在 profile（配置文件）中设置首选项）
+profile.set_preference("network.proxy.type", 1)
+# ip及其端口号配置为 http 协议代理
+profile.set_preference("network.proxy.http", "127.0.0.1")
+profile.set_preference("network.proxy.http_port", 8087)
+
+profile.set_preference("network.proxy.ssl", "127.0.0.1")
+profile.set_preference("network.proxy.ssl_port", 8087)
+
+# 所有协议共用一种 ip 及端口，如果单独配置，不必设置该项，因为其默认为 False
+# profile.set_preference("network.proxy.share_proxy_settings", True)
+
+# 默认本地地址（localhost）不使用代理，如果有些域名在访问时不想使用代理可以使用类似下面的参数设置
+# profile.set_preference("network.proxy.no_proxies_on", "localhost")
+profile.update_preferences()
+driver = webdriver.Firefox(executable_path='C:\\tools\\geckodriver\\mozilla\\geckodriver', firefox_profile=profile, firefox_options=options)
 
 # driver.close()
 
@@ -31,8 +49,8 @@ class CnBBC(News):
         e = pq(page)
         data = {}
         data['title'] = e('title').text()
-        data['content'] = e('.article-content').html()
-        data['imgs'] = [e(i).attr('src') for i in  e('.article-content img')]
+        data['content'] = e('.story-body').remove('.with-extracted-share-icons').html()
+        data['imgs'] = [e(i).attr('src') for i in  e('.story-body img')]
         # print(data['imgs'])
         return data
 
@@ -63,8 +81,8 @@ class CnBBC(News):
         driver.get(url)
         time.sleep(5)
         page = driver.page_source
-        print(page)
-        save_html('bbc.html',page)
+        # print(page)
+        # save_html('bbc.html',page)
         news_list = cls._parse_list(page)
         return news_list
 
@@ -73,11 +91,13 @@ class CnBBC(News):
         main_url = config.cn_bbc_main_url
         most_popular_news = cls._get_most_popular(main_url)
         print(most_popular_news)
-        # for item in daily:
-        #     # print('item', item)
-        #     cls._single_page(item['url'])
+        for url in most_popular_news:
+            # print('item', item)
+            cls._single_page(url)
 
-        # pdfs = get_all_file(config.pdf_out_folder)
-        # filename = 'cn_nytimes_daily_{}.{}'.format(time.strftime("%Y-%m-%d"),'pdf')
-        # out_path = os.path.join(config.pdf_merger, filename)    
-        # merger_pdf(pdfs, out_path)
+        pdfs = get_all_file(config.pdf_out_folder)
+        filename = 'cn_bbc_{}.{}'.format(time.strftime("%Y-%m-%d"),'pdf')
+        out_path = os.path.join(config.pdf_merger, filename)    
+        merger_pdf(pdfs, out_path)
+
+        # cls._single_page('https://www.bbc.com/zhongwen/simp/world-46533135')
