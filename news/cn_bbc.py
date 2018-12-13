@@ -23,11 +23,11 @@ profile = FirefoxProfile()
 # 激活手动代理配置（对应着在 profile（配置文件）中设置首选项）
 profile.set_preference("network.proxy.type", 1)
 # ip及其端口号配置为 http 协议代理
-profile.set_preference("network.proxy.http", "127.0.0.1")
-profile.set_preference("network.proxy.http_port", 8087)
+profile.set_preference("network.proxy.http", config.firefox_proxy)
+profile.set_preference("network.proxy.http_port", config.firefox_port)
 
-profile.set_preference("network.proxy.ssl", "127.0.0.1")
-profile.set_preference("network.proxy.ssl_port", 8087)
+profile.set_preference("network.proxy.ssl", config.firefox_proxy)
+profile.set_preference("network.proxy.ssl_port", config.firefox_port)
 
 # 所有协议共用一种 ip 及端口，如果单独配置，不必设置该项，因为其默认为 False
 # profile.set_preference("network.proxy.share_proxy_settings", True)
@@ -35,7 +35,7 @@ profile.set_preference("network.proxy.ssl_port", 8087)
 # 默认本地地址（localhost）不使用代理，如果有些域名在访问时不想使用代理可以使用类似下面的参数设置
 # profile.set_preference("network.proxy.no_proxies_on", "localhost")
 profile.update_preferences()
-driver = webdriver.Firefox(executable_path='C:\\tools\\geckodriver\\mozilla\\geckodriver', firefox_profile=profile, firefox_options=options)
+driver = webdriver.Firefox(executable_path=config.firefox_executable_path, firefox_profile=profile, firefox_options=options)
 
 # driver.close()
 
@@ -90,6 +90,7 @@ class CnBBC(News):
         driver.get(url)
         time.sleep(5)
         page = driver.page_source
+        driver.close()
         # print(page)
         # save_html('bbc.html',page)
         news_list = cls._parse_list(page)

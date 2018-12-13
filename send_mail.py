@@ -46,7 +46,7 @@ def send_kindle(file_path, file_name):
 
 
 def send_news_emil():
-    file_list = get_all_file(config.pdf_merger)
+    file_list = get_all_file(config.muti_pdf_dir)
     # print(file_list)
     for file in file_list:
         file_name = os.path.basename(file)
