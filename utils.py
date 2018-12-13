@@ -107,3 +107,14 @@ def merger_pdf(pdfs, out_path):
  
     output = open(out_path, "wb")
     merger.write(output)
+
+
+def make_dirs(file_dir):
+    '''
+    检查文件夹是否存在，没有则创建
+    '''
+    #判断文件路径是否存在，如果不存在，则创建，此处是创建多级目录
+    if not os.path.isdir(file_dir):
+        os.makedirs(file_dir)
+
+

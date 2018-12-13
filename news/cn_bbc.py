@@ -40,9 +40,16 @@ driver = webdriver.Firefox(executable_path='C:\\tools\\geckodriver\\mozilla\\gec
 # driver.close()
 
 class CnBBC(News):
-    __fields__ =  [
-        ('news_list', dict, {}),
-    ]
+    def __init__(self):
+        date = time.strftime("%Y-%m-%d")
+        self.html_dir = config.save_folder+'/cn_bbc/'+date+'/html'
+        self.img_dir = config.save_folder+'/cn_bbc/'+date+'/html/img'
+        self.single_pdf_dir = config.save_folder+'/cn_bbc/'+date+'/single_pdf_dir'
+        self.muti_pdf_dir = config.save_folder+'/muti_pdf_dir'
+        make_dirs(self.html_dir)
+        make_dirs(self.img_dir)
+        make_dirs(self.single_pdf_dir)
+        make_dirs(self.muti_pdf_dir)
 
     @classmethod
     def _parse_page(cls, page):
@@ -63,10 +70,12 @@ class CnBBC(News):
             return False
         title = data['title']
         content = replace_img_url(data['content'])
-        html_path = os.path.join(config.save_folder, title+'.html')        
+
+        html_path = os.path.join(cls().html_dir, title+'.html')
+        # print('html_path', html_path)        
         save_html(html_path, content)
-        down_imgs(data['imgs'], config.img_save_folder)
-        pdf_path = os.path.join(config.pdf_out_folder, title+'.pdf')
+        down_imgs(data['imgs'], cls().img_dir)
+        pdf_path = os.path.join(cls().single_pdf_dir, title+'.pdf')
         save_pdf(html_path, pdf_path)
 
     @classmethod
@@ -86,18 +95,17 @@ class CnBBC(News):
         news_list = cls._parse_list(page)
         return news_list
 
-    @classmethod
-    def main(cls):
+    def main(self):
         main_url = config.cn_bbc_main_url
-        most_popular_news = cls._get_most_popular(main_url)
-        print(most_popular_news)
+        most_popular_news = self._get_most_popular(main_url)
+        print('most_popular_news', most_popular_news)
         for url in most_popular_news:
             # print('item', item)
-            cls._single_page(url)
+            self._single_page(url)
 
-        pdfs = get_all_file(config.pdf_out_folder)
+        pdfs = get_all_file(self.single_pdf_dir)
         filename = 'cn_bbc_{}.{}'.format(time.strftime("%Y-%m-%d"),'pdf')
-        out_path = os.path.join(config.pdf_merger, filename)    
+        out_path = os.path.join(self.muti_pdf_dir, filename)    
         merger_pdf(pdfs, out_path)
 
-        # cls._single_page('https://www.bbc.com/zhongwen/simp/world-46533135')
+        # self._single_page('https://www.bbc.com/zhongwen/simp/world-46533135')

@@ -4,7 +4,9 @@ from send_mail import send_news_emil
 
 def main():
     # CnNytimes.main()
-    CnBBC.main()
+    new = CnBBC()
+    new.main()
+
     # send_news_emil()
     
 if __name__ == '__main__':
