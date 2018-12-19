@@ -26,7 +26,7 @@ def send_kindle(file_path, file_name):
     # 邮件对象:
     msg = MIMEMultipart()
 
-    msg['From'] = _format_addr('新闻推送 <%s>' % from_addr)
+    msg['From'] = _format_addr('news <%s>' % from_addr)
     msg['To'] = _format_addr('kindle <%s>' % to_addr)
     msg['Subject'] = Header('kindle', 'utf-8').encode()
 

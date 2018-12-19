@@ -77,7 +77,7 @@ def save_pdf(in_path, out_path):
     configuration = pdfkit.configuration(wkhtmltopdf=path_wk)
     options = {
             'page-size': 'Letter',
-            'minimum-font-size': 30,
+            'minimum-font-size': 60,
             'margin-top': '0.75in',
             'margin-right': '0.75in',
             'margin-bottom': '0.75in',
